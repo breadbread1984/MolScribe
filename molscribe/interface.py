@@ -11,6 +11,7 @@ from .dataset import get_transforms
 from .model import Encoder, Decoder
 from .chemistry import convert_graph_to_smiles
 from .tokenizer import get_tokenizer
+from .utils import module_to_device
 
 
 BOND_TYPES = ["", "single", "double", "triple", "aromatic", "solid wedge", "dashed wedge"]
@@ -84,8 +85,8 @@ class MolScribe:
         safe_load(decoder, states['decoder'])
         # print(f"Model loaded from {load_path}")
 
-        encoder.to(device)
-        decoder.to(device)
+        module_to_device(encoder, device)
+        module_to_device(decoder, device)
         encoder.eval()
         decoder.eval()
         return encoder, decoder

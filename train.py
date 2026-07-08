@@ -20,7 +20,7 @@ from molscribe.dataset import TrainDataset, AuxTrainDataset, bms_collate
 from molscribe.model import Encoder, Decoder
 from molscribe.loss import Criterion
 from molscribe.utils import seed_torch, save_args, init_summary_writer, LossMeter, AverageMeter, asMinutes, timeSince, \
-    print_rank_0, format_df
+    print_rank_0, format_df, module_to_device
 from molscribe.chemistry import convert_graph_to_smiles, postprocess_smiles, keep_main_molecule
 from molscribe.tokenizer import get_tokenizer
 from evaluate import SmilesEvaluator
@@ -150,8 +150,8 @@ def get_model(args, tokenizer, device, load_path=None):
         safe_load(encoder, states['encoder'])
         safe_load(decoder, states['decoder'])
         # print_rank_0(f"Model loaded from {load_path}")
-    encoder.to(device)
-    decoder.to(device)
+    module_to_device(encoder, device)
+    module_to_device(decoder, device)
 
     if args.local_rank != -1:
         encoder = DDP(encoder, device_ids=[args.local_rank], output_device=args.local_rank)

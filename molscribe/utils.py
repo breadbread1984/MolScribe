@@ -142,6 +142,18 @@ def to_device(data, device):
         return {k: to_device(v, device) for k, v in data.items()}
 
 
+def module_to_device(module, device):
+    """Safely move a module to device, handling meta tensors."""
+    try:
+        first_param = next(module.parameters())
+        if first_param.device.type == 'meta':
+            module.to_empty(device=device)
+        else:
+            module.to(device)
+    except StopIteration:
+        module.to(device)
+
+
 def round_floats(o):
     if isinstance(o, float):
         return round(o, 3)
