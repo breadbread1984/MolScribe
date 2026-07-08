@@ -16,7 +16,7 @@ from albumentations.pytorch import ToTensorV2
 from .indigo import Indigo
 from .indigo.renderer import IndigoRenderer
 
-from .augment import SafeRotate, CropWhite, PadWhite, SaltAndPepperNoise
+from .augment import CropWhite, PadWhite, SaltAndPepperNoise
 from .utils import FORMAT_INFO
 from .tokenizer import PAD_ID
 from .chemistry import get_num_atoms, normalize_nodes
@@ -36,7 +36,7 @@ INDIGO_COLOR_PROB = 0.2
 def get_transforms(input_size, augment=True, rotate=True, debug=False):
     trans_list = []
     if augment and rotate:
-        trans_list.append(SafeRotate(limit=90, border_mode=cv2.BORDER_CONSTANT, value=(255, 255, 255)))
+        trans_list.append(A.SafeRotate(limit=90, border_mode=cv2.BORDER_CONSTANT, value=(255, 255, 255)))
     trans_list.append(CropWhite(pad=5))
     if augment:
         trans_list += [
