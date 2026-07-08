@@ -1,7 +1,7 @@
 from distutils.core import setup
 from pathlib import Path
 
-setup(name='MolScribe',
+setup(name='molscribe',
       version='1.1.1',
       description='MolScribe',
       author='Yujie Qian',
