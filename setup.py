@@ -22,5 +22,5 @@ setup(name='molscribe',
         "OpenNMT-py==2.2.0",
         "rdkit>=2022.3.3",
         "albumentations>=1.4.11",
-        "timm==0.4.12"
+        "timm>=1.0.14"
       ])

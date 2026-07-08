@@ -10,6 +10,7 @@ from .utils import FORMAT_INFO, to_device
 from .tokenizer import SOS_ID, EOS_ID, PAD_ID, MASK_ID
 from .inference import GreedySearch, BeamSearch
 from .transformer import TransformerDecoder, Embeddings
+from .transformer.swin_transformer import create_swin_model
 
 
 class Encoder(nn.Module):
@@ -25,7 +26,7 @@ class Encoder(nn.Module):
             self.cnn.fc = nn.Identity()
         elif model_name.startswith('swin'):
             self.model_type = 'swin'
-            self.transformer = timm.create_model(model_name, pretrained=pretrained, pretrained_strict=False,
+            self.transformer = create_swin_model(model_name, pretrained=pretrained, strict=False,
                                                  use_checkpoint=args.use_checkpoint)
             self.n_features = self.transformer.num_features
             self.transformer.head = nn.Identity()

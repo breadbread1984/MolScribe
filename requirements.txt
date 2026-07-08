@@ -11,4 +11,4 @@ SmilesPE==0.0.3
 OpenNMT-py==2.2.0
 rdkit>=2022.3.3
 albumentations>=1.4.11
-timm @ git+https://github.com/rwightman/pytorch-image-models.git@54a6cca27a9a3e092a07457f5d56709da56e3cf5
+timm>=1.0.14
