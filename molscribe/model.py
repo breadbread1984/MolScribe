@@ -51,13 +51,12 @@ class Encoder(nn.Module):
             raise NotImplemented
 
     def swin_forward(self, transformer, x):
-        x, _, _ = transformer.patch_embed(x)
+        x, H, W = transformer.patch_embed(x)
         if transformer.absolute_pos_embed is not None:
             x = x + transformer.absolute_pos_embed
         x = transformer.pos_drop(x)
 
-        def layer_forward(layer, x, hiddens):
-            H, W = layer.input_resolution
+        def layer_forward(layer, x, H, W, hiddens):
             for blk in layer.blocks:
                 if not torch.jit.is_scripting() and layer.use_checkpoint:
                     x = torch.utils.checkpoint.checkpoint(blk, x, H, W)
@@ -66,12 +65,12 @@ class Encoder(nn.Module):
             B, L, C = x.shape
             hiddens.append(x.view(B, H, W, C))
             if layer.downsample is not None:
-                x, _, _ = layer.downsample(x, H, W)
-            return x, hiddens
+                x, H, W = layer.downsample(x, H, W)
+            return x, H, W, hiddens
 
         hiddens = []
         for layer in transformer.layers:
-            x, hiddens = layer_forward(layer, x, hiddens)
+            x, H, W, hiddens = layer_forward(layer, x, H, W, hiddens)
         x = transformer.norm(x)  # B L C
         hiddens[-1] = x.view_as(hiddens[-1])
         return x, hiddens
