@@ -48,8 +48,9 @@ class CropWhite(A.DualTransform):
     def apply(self, img, crop_top=0, crop_bottom=0, crop_left=0, crop_right=0, **params):
         height, width, _ = img.shape
         img = img[crop_top:height - crop_bottom, crop_left:width - crop_right]
-        img = A.augmentations.pad_with_params(
-            img, self.pad, self.pad, self.pad, self.pad, border_mode=cv2.BORDER_CONSTANT, value=self.value)
+        img = cv2.copyMakeBorder(
+            img, self.pad, self.pad, self.pad, self.pad,
+            borderType=cv2.BORDER_CONSTANT, value=self.value)
         return img
 
     def apply_to_keypoint(self, keypoint, crop_top=0, crop_bottom=0, crop_left=0, crop_right=0, **params):
@@ -84,9 +85,9 @@ class PadWhite(A.DualTransform):
         return params
 
     def apply(self, img, pad_top=0, pad_bottom=0, pad_left=0, pad_right=0, **params):
-        height, width, _ = img.shape
-        img = A.augmentations.pad_with_params(
-            img, pad_top, pad_bottom, pad_left, pad_right, border_mode=cv2.BORDER_CONSTANT, value=self.value)
+        img = cv2.copyMakeBorder(
+            img, pad_top, pad_bottom, pad_left, pad_right,
+            borderType=cv2.BORDER_CONSTANT, value=self.value)
         return img
 
     def apply_to_keypoint(self, keypoint, pad_top=0, pad_bottom=0, pad_left=0, pad_right=0, **params):
@@ -141,13 +142,13 @@ class ResizePad(A.DualTransform):
         pad_bottom = (self.height - h) - pad_top
         pad_left = (self.width - w) // 2
         pad_right = (self.width - w) - pad_left
-        img = A.augmentations.pad_with_params(
+        img = cv2.copyMakeBorder(
             img,
             pad_top,
             pad_bottom,
             pad_left,
             pad_right,
-            border_mode=cv2.BORDER_CONSTANT,
+            borderType=cv2.BORDER_CONSTANT,
             value=self.value,
         )
         return img
