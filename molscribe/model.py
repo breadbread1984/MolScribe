@@ -57,16 +57,16 @@ class Encoder(nn.Module):
         x = transformer.pos_drop(x)
 
         def layer_forward(layer, x, hiddens):
+            H, W = layer.input_resolution
             for blk in layer.blocks:
                 if not torch.jit.is_scripting() and layer.use_checkpoint:
-                    x = torch.utils.checkpoint.checkpoint(blk, x)
+                    x = torch.utils.checkpoint.checkpoint(blk, x, H, W)
                 else:
-                    x = blk(x)
-            H, W = layer.input_resolution
+                    x = blk(x, H, W)
             B, L, C = x.shape
             hiddens.append(x.view(B, H, W, C))
             if layer.downsample is not None:
-                x = layer.downsample(x)
+                x, _, _ = layer.downsample(x, H, W)
             return x, hiddens
 
         hiddens = []
