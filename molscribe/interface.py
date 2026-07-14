@@ -46,7 +46,7 @@ class MolScribe:
     def _get_args(self, args_states=None):
         parser = argparse.ArgumentParser()
         # Model
-        parser.add_argument('--encoder', type=str, default='swin_base')
+        parser.add_argument('--encoder', type=str, default='swin_base_patch4_window12_384')
         parser.add_argument('--decoder', type=str, default='transformer')
         parser.add_argument('--trunc_encoder', action='store_true')  # use the hidden states before downsample
         parser.add_argument('--no_pretrained', action='store_true')

@@ -13,10 +13,21 @@ from .transformer import TransformerDecoder, Embeddings
 from .transformer.swin_transformer import create_swin_model
 
 
+# Map shorthand swin names to full names for backward compatibility
+_SWIN_NAME_MAP = {
+    'swin_tiny': 'swin_tiny_patch4_window7_224',
+    'swin_small': 'swin_small_patch4_window7_224',
+    'swin_base': 'swin_base_patch4_window12_384',
+    'swin_large': 'swin_large_patch4_window12_384',
+}
+
+
 class Encoder(nn.Module):
     def __init__(self, args, pretrained=False):
         super().__init__()
         model_name = args.encoder
+        if model_name in _SWIN_NAME_MAP:
+            model_name = _SWIN_NAME_MAP[model_name]
         self.model_name = model_name
         if model_name.startswith('resnet'):
             self.model_type = 'resnet'
