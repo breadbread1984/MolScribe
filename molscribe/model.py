@@ -51,7 +51,7 @@ class Encoder(nn.Module):
             raise NotImplemented
 
     def swin_forward(self, transformer, x):
-        x = transformer.patch_embed(x)
+        x, _, _ = transformer.patch_embed(x)
         if transformer.absolute_pos_embed is not None:
             x = x + transformer.absolute_pos_embed
         x = transformer.pos_drop(x)
