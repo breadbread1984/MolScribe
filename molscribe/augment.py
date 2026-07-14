@@ -53,9 +53,13 @@ class CropWhite(A.DualTransform):
             borderType=cv2.BORDER_CONSTANT, value=self.value)
         return img
 
-    def apply_to_keypoint(self, keypoint, crop_top=0, crop_bottom=0, crop_left=0, crop_right=0, **params):
-        x, y, angle, scale = keypoint[:4]
-        return x - crop_left + self.pad, y - crop_top + self.pad, angle, scale
+    def apply_to_keypoints(self, keypoints, crop_top=0, crop_bottom=0, crop_left=0, crop_right=0, **params):
+        if len(keypoints) == 0:
+            return keypoints
+        keypoints = np.array(keypoints).copy()
+        keypoints[:, 0] = keypoints[:, 0] - crop_left + self.pad
+        keypoints[:, 1] = keypoints[:, 1] - crop_top + self.pad
+        return keypoints
 
     def get_transform_init_args_names(self):
         return ('value', 'pad')
@@ -90,9 +94,13 @@ class PadWhite(A.DualTransform):
             borderType=cv2.BORDER_CONSTANT, value=self.value)
         return img
 
-    def apply_to_keypoint(self, keypoint, pad_top=0, pad_bottom=0, pad_left=0, pad_right=0, **params):
-        x, y, angle, scale = keypoint[:4]
-        return x + pad_left, y + pad_top, angle, scale
+    def apply_to_keypoints(self, keypoints, pad_top=0, pad_bottom=0, pad_left=0, pad_right=0, **params):
+        if len(keypoints) == 0:
+            return keypoints
+        keypoints = np.array(keypoints).copy()
+        keypoints[:, 0] = keypoints[:, 0] + pad_left
+        keypoints[:, 1] = keypoints[:, 1] + pad_top
+        return keypoints
 
     def get_transform_init_args_names(self):
         return ('value', 'pad_ratio')
@@ -114,8 +122,8 @@ class SaltAndPepperNoise(A.DualTransform):
             img[x, y] = self.value
         return img
 
-    def apply_to_keypoint(self, keypoint, **params):
-        return keypoint
+    def apply_to_keypoints(self, keypoints, **params):
+        return keypoints
 
     def get_transform_init_args_names(self):
         return ('value', 'num_dots')
